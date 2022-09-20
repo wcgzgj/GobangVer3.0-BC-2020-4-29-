@@ -16,11 +16,11 @@ ChessRobot::~ChessRobot(void)
 }
 
 void ChessRobot::AI(Map mp)
-{//³ÌĞòÏÈ¸øÃ¿¸ö¿ÕÎ»¸üĞÂÈ¨Öµ
-	//È»ºóÔÙ»ñµÃÈ¨Öµ×î´óµÄÆå×Ó
-	//×îºó½«È¨Öµ×î´óµÄÆå×Ó·ÅÖÃÔÚÆåÅÌÖĞ
+{//ç¨‹åºå…ˆç»™æ¯ä¸ªç©ºä½æ›´æ–°æƒå€¼
+	//ç„¶åå†è·å¾—æƒå€¼æœ€å¤§çš„æ£‹å­
+	//æœ€åå°†æƒå€¼æœ€å¤§çš„æ£‹å­æ”¾ç½®åœ¨æ£‹ç›˜ä¸­
 	if(mp.getNum()==0)
-	{//µ±ÆåÅÌÈ«¿ÕµÄÊ±ºò£¬»úÆ÷ÈËÔÚÖĞ¼äÏÂ×Ó
+	{//å½“æ£‹ç›˜å…¨ç©ºçš„æ—¶å€™ï¼Œæœºå™¨äººåœ¨ä¸­é—´ä¸‹å­
 		putChess(mp,Chess((mp.getSize()+1)/2,(mp.getSize()+1)/2));
 		return;
 	}
@@ -32,7 +32,7 @@ void ChessRobot::AI(Map mp)
 int ChessRobot::getAtkValue(Map mp, Chess ce)
 {
 	int allValue[7];
-	//½«ÆßÖÖÆåĞÍµÄ¸öÊı´æÈëÊı×é
+	//å°†ä¸ƒç§æ£‹å‹çš„ä¸ªæ•°å­˜å…¥æ•°ç»„
 	allValue[0]=mp.countLinkFive(ce);
 	allValue[1]=mp.countLiveFour(ce);
 	allValue[2]=mp.countRushFour(ce);
@@ -42,7 +42,7 @@ int ChessRobot::getAtkValue(Map mp, Chess ce)
 	allValue[6]=mp.countSleepTwo(ce);
 	int atkValue=0;
 	atkValue+=allValue[0]*TWO_VAL;
-	atkValue+=allValue[1]*FIFTEEN_VAL;
+	atkValue+=allValue[1]*FIVE_VAL;
 	atkValue+=getFibHand(allValue)*SIX_VAL;
 	atkValue+=allValue[2]*EIGHT_VAL;
 	atkValue+=allValue[3]*TEN_VAL;
@@ -54,11 +54,11 @@ int ChessRobot::getAtkValue(Map mp, Chess ce)
 
 int ChessRobot::getDefValue(Map mp, Chess ce)
 {
-	//½«friendColorºÍenemyColor»¥»»
+	//å°†friendColorå’ŒenemyColoräº’æ¢
 	mp.reverseFriendEnemy();
 
 	int allValue[7];
-	//½«ÆßÖÖÆåĞÍµÄ¸öÊı´æÈëÊı×é
+	//å°†ä¸ƒç§æ£‹å‹çš„ä¸ªæ•°å­˜å…¥æ•°ç»„
 	allValue[0]=mp.countLinkFive(ce);
 	allValue[1]=mp.countLiveFour(ce);
 	allValue[2]=mp.countRushFour(ce);
@@ -76,7 +76,7 @@ int ChessRobot::getDefValue(Map mp, Chess ce)
 	defValue+=allValue[5]*FIFTEEN_VAL/2;
 	defValue+=allValue[6]*FIFTEEN_VAL/2/2;
 
-	//ÓÃÍêºó½«friendColorºÍenemyColor»»»ØÀ´
+	//ç”¨å®Œåå°†friendColorå’ŒenemyColoræ¢å›æ¥
 	mp.reverseFriendEnemy();
 	return defValue;
 }
@@ -84,9 +84,9 @@ int ChessRobot::getDefValue(Map mp, Chess ce)
 int ChessRobot::getFibHand(int allValue[])
 {
 	int count=0;
-	if(allValue[3]>=2) count++;//Ë«»îÈı½ûÊÖ
-	if(allValue[1]>=2 || allValue[2]>=2 || (allValue[1]&&allValue[2])) count++;//Ë«ËÄ½ûÊÖ
-	//³¤Á¬½ûÊÖ²»ÓÃ¹Ü
+	if(allValue[3]>=2) count++;//åŒæ´»ä¸‰ç¦æ‰‹
+	if(allValue[1]>=2 || allValue[2]>=2 || (allValue[1]&&allValue[2])) count++;//åŒå››ç¦æ‰‹
+	//é•¿è¿ç¦æ‰‹ä¸ç”¨ç®¡
 	return count;
 }
 
@@ -104,14 +104,14 @@ int ChessRobot::someWin(Map mp)
 		for(int j=1;j<=mp.getSize();j++)
 		{
 			if(mp.getChess(i,j).color==mp.getFriendColor() && mp.countLinkFive(Chess(i,j))>0) 
-				return 1;//1ÊÇ»úÆ÷ÈËÓ®
-			mp.reverseFriendEnemy();//Ô­À´µÄÅóÓÑ±ä³ÉµĞÈË
+				return 1;//1æ˜¯æœºå™¨äººèµ¢
+			mp.reverseFriendEnemy();//åŸæ¥çš„æœ‹å‹å˜æˆæ•Œäºº
 			if(mp.getChess(i,j).color==mp.getFriendColor() && mp.countLinkFive(Chess(i,j))>0) 
 			{
 				mp.reverseFriendEnemy();
-				return 2;//2ÊÇÍæ¼ÒÓ®
+				return 2;//2æ˜¯ç©å®¶èµ¢
 			}
-			mp.reverseFriendEnemy();//Ô­À´µÄµĞÈËÓÖ±ä»ØÅóÓÑ
+			mp.reverseFriendEnemy();//åŸæ¥çš„æ•Œäººåˆå˜å›æœ‹å‹
 		}
 	}
 	return 0;
@@ -158,7 +158,7 @@ void ChessRobot::outputAtkDefValue(Map mp)
 }
 
 int ChessRobot::inputIsOk(Map mp,Chess ce)
-{//³¬·¶Î§»òÕßÏÂÆåµÄÎ»ÖÃ·Ç¿Õ£¬¶¼ÊÇ´íÎóµÄ
+{//è¶…èŒƒå›´æˆ–è€…ä¸‹æ£‹çš„ä½ç½®éç©ºï¼Œéƒ½æ˜¯é”™è¯¯çš„
 	if(ce.col<1 || ce.col>mp.getSize() || ce.row<1 || ce.row>mp.getSize() ||
 		mp.getChess(ce.row,ce.col).color!=NONE) return 0;
 	else return 1;
@@ -167,7 +167,7 @@ int ChessRobot::inputIsOk(Map mp,Chess ce)
 Chess ChessRobot::getBestChess(Map mp)
 {
 	//if(mp.getNum()==0) return Chess((mp.getSize()+1)/2,(mp.getSize()+1)/2);
-	//ÕâÀïÅĞ¶ÏÃ»ÓĞÓÃ
+	//è¿™é‡Œåˆ¤æ–­æ²¡æœ‰ç”¨
 	using std::vector;
 	vector<Chess> chessChain;
 	
@@ -197,7 +197,7 @@ Chess ChessRobot::getBestChess(Map mp)
 		if((*it).atkValue>maxAtk.atkValue) maxAtk=*it;
 		if((*it).defValue>maxDef.defValue) maxDef=*it;
 		it++;
-	}//½«ÕÒ×î´óºÍÕÒ×îĞ¡ºÏ²¢£¬¼õÉÙÅĞ¶ÏÊ±¼ä
+	}//å°†æ‰¾æœ€å¤§å’Œæ‰¾æœ€å°åˆå¹¶ï¼Œå‡å°‘åˆ¤æ–­æ—¶é—´
 
 
 	/*it=chessChain.begin();
@@ -207,8 +207,8 @@ Chess ChessRobot::getBestChess(Map mp)
 		if((*it).defValue>maxDef.defValue) maxDef=*it;
 		it++;
 	}*/
-	vector<Chess> secondWeight;//Èç¹ûmaxDef>maxAtk£¬´æmaxDef;·´Ö®ÒàÈ»
-	int flag=0;//¼ÇÂ¼ÊÇmaxAtk´ó»¹ÊÇmaxDef´ó
+	vector<Chess> secondWeight;//å¦‚æœmaxDef>maxAtkï¼Œå­˜maxDef;åä¹‹äº¦ç„¶
+	int flag=0;//è®°å½•æ˜¯maxAtkå¤§è¿˜æ˜¯maxDefå¤§
 	if(maxAtk.atkValue>=maxDef.defValue)
 	{
 		flag=1;
@@ -231,21 +231,21 @@ Chess ChessRobot::getBestChess(Map mp)
 	}
 
 
-	//ÊÇÒòÎªÆäÔÚOJÖĞ»áÏÔÊ¾³¬Ê±
+	//æ˜¯å› ä¸ºå…¶åœ¨OJä¸­ä¼šæ˜¾ç¤ºè¶…æ—¶
 	it=secondWeight.begin();
 	Chess tmpMax;
-	if(flag==1)//Èç¹ûmaxAtk´ó
+	if(flag==1)//å¦‚æœmaxAtkå¤§
 	{
-		tmpMax=*it;//ÕÒ´ÎÎ»È¨µÄ×î´óÖµ
+		tmpMax=*it;//æ‰¾æ¬¡ä½æƒçš„æœ€å¤§å€¼
 		while(it!=secondWeight.end())
 		{
 			if((*it).defValue>=tmpMax.defValue) tmpMax=*it;
 			it++;
 		}
 	}
-	else//Èç¹ûmaxDef´ó
+	else//å¦‚æœmaxDefå¤§
 	{
-		tmpMax=*it;//ÕÒ´ÎÎ»È¨µÄ×î´óÖµ
+		tmpMax=*it;//æ‰¾æ¬¡ä½æƒçš„æœ€å¤§å€¼
 		while(it!=secondWeight.end())
 		{
 			if((*it).atkValue>=tmpMax.atkValue) tmpMax=*it;
@@ -254,10 +254,10 @@ Chess ChessRobot::getBestChess(Map mp)
 	}
 
 
-	int n=0;//¼ÇÂ¼´ÎÎ»È¨Öµ×î´óÖµ¸öÊı
-	vector<Chess> secondWeightBest;//´æ·ÅµÚ¶şÎ»È¨µÄ×î´óÖµÁ´<---Èç¹û²»Ö¹Ò»¸ö»¹ÒªËæ»úÈ¡Ò»¸ö
+	int n=0;//è®°å½•æ¬¡ä½æƒå€¼æœ€å¤§å€¼ä¸ªæ•°
+	vector<Chess> secondWeightBest;//å­˜æ”¾ç¬¬äºŒä½æƒçš„æœ€å¤§å€¼é“¾<---å¦‚æœä¸æ­¢ä¸€ä¸ªè¿˜è¦éšæœºå–ä¸€ä¸ª
 	it=secondWeight.begin();
-	if(flag==1)//Èç¹ûmaxValue´ó
+	if(flag==1)//å¦‚æœmaxValueå¤§
 	{
 		while(it!=secondWeight.end())
 		{
@@ -282,7 +282,7 @@ Chess ChessRobot::getBestChess(Map mp)
 		}
 	}
 	if(n==1) return secondWeightBest[0];
-	int loc=getRandomLocation(n);//Éú³É0~n-1 µÄËæ»úÊı£¬ËùÎ½ËùÑ¡ÔñµÄÆå×Ó£»
+	int loc=getRandomLocation(n);//ç”Ÿæˆ0~n-1 çš„éšæœºæ•°ï¼Œæ‰€è°“æ‰€é€‰æ‹©çš„æ£‹å­ï¼›
 	return secondWeightBest[loc];
 	/*if(maxAtk.atkValue>maxDef.defValue) return maxAtk;
 	else return maxDef;*/
